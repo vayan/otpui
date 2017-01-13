@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+require "otpui"
+
+settings = Otpui::Settings.load
+
+settings[:secrets] = {
+  google: "base32secretkey3232"
+}
+
+settings.save
+
+otp = Otpui::Indicator.new
+otp.start
