@@ -1,4 +1,5 @@
-require "ruby-libappindicator"
+require "glib2"
+require "gtk3"
 require "rotp"
 require "clipboard"
 
@@ -6,47 +7,65 @@ require "otpui/version"
 require "otpui/log"
 require "otpui/resources"
 require "otpui/settings"
+require "otpui/settings_dialog"
 
 module Otpui
-  class Indicator
-    def add_submenu_activate(name:, parent:)
-      sub_menu = Gtk::MenuItem.new name
-      sub_menu.signal_connect "activate" do
-        yield
-      end
-      parent.append sub_menu
-    end
-
+  class Main
     def start
+      def on_main_window_destroy(object)
+        Gtk.main_quit()
+      end
+
+      def on_settings_menu_item_activate(object)
+        dialog = SettingsDialog.new
+        dialog.show
+      end
+
       otps = Settings.load[:secrets]
 
-      ai = ::AppIndicator::AppIndicator.new "otp-indicator", "logo-indicator", AppIndicator::Category::APPLICATION_STATUS
-      ai.set_icon_theme_path "#{Resources.base_dir}/icons"
-      ai.set_status(AppIndicator::Status::ACTIVE)
+      builder = Gtk::Builder.new
+      builder.add_from_file Resources.get_glade("main.glade")
 
-      root_menu = Gtk::Menu.new
+      model = Gtk::ListStore.new(String, String)
 
-      otps.each do |name, secrets|
-        totp = ROTP::TOTP.new(secrets)
+      renderer = Gtk::CellRendererText.new
+      column_name = Gtk::TreeViewColumn.new("Name", renderer, { text: 0 })
+      column_secret = Gtk::TreeViewColumn.new("Secret", renderer, { text: 1 })
 
-        item = Gtk::MenuItem.new name.to_s
-        item_actions = Gtk::Menu.new
-        item.set_submenu item_actions
+      treeview = Gtk::TreeView.new(model)
+      treeview.append_column(column_name)
+      treeview.append_column(column_secret)
+      treeview.selection.set_mode(:single)
+      builder["scrolled_otps_win"].add_with_viewport(treeview)
 
-        add_submenu_activate name: "Copy", parent: item_actions do
-          Clipboard.copy totp.now
+      puts otps
+
+      otps.each do |name, secret|
+        iter = model.append
+        iter[0] = name
+        iter[1] = secret
+      end
+
+      builder.connect_signals do |handler|
+        begin
+          method(handler)
+        rescue
+          Log.debug "#{handler} not yet implemented!"
         end
-
-        root_menu.append(item)
       end
 
-      add_submenu_activate name: "exit", parent: root_menu do
-        Gtk.main_quit
+      builder["main_window"].show_all
+
+      GLib::Timeout.add(1000) do
+        otps.each do |name, secret|
+          totp = ROTP::TOTP.new("base32secret3232")
+          iter = model.append
+          iter[0] = name
+          iter[1] = totp.now.to_s
+        end
+        builder["main_window"].show_all
+        true
       end
-
-      root_menu.show_all
-
-      ai.set_menu(root_menu)
 
       Gtk.main
     end

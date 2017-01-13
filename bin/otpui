@@ -10,5 +10,5 @@ settings[:secrets] = {
 
 settings.save
 
-otp = Otpui::Indicator.new
+otp = Otpui::Main.new
 otp.start

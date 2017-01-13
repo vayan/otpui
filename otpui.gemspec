@@ -7,8 +7,8 @@ Gem::Specification.new do |spec|
   spec.version       = Otpui::VERSION
   spec.authors       = ["Yann Vaillant"]
   spec.email         = ["gems@vaillant.im"]
-  spec.summary       = %q{One Time Password Indicator}
-  spec.description   = %q{One Time Password Indicator}
+  spec.summary       = %q{One Time Password Ui}
+  spec.description   = %q{One Time Password Ui}
   spec.homepage      = "https://github.com/vayan/otpui"
   spec.license       = "MIT"
 
@@ -23,6 +23,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec"
 
   spec.add_dependency "rotp"
-  spec.add_dependency "ruby-libappindicator"
+  spec.add_dependency "gtk3"
   spec.add_dependency "clipboard"
 end
