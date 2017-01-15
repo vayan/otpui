@@ -1,5 +1,7 @@
 # OTPui
 
+[![Build Status](https://travis-ci.org/vayan/otpui.svg?branch=master)](https://travis-ci.org/vayan/otpui)
+
 Basic GTK app to display and copy OTP on Linux
 
 - [x] Import QRCodes made for Google Authenticator
