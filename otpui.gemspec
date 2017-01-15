@@ -27,4 +27,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "clipboard"
   spec.add_dependency "zxing"
   spec.add_dependency "uri-query_params"
+  spec.add_dependency "gio2", "< 3.1"
 end
