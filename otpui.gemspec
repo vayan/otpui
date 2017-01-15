@@ -25,4 +25,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "rotp"
   spec.add_dependency "gtk3"
   spec.add_dependency "clipboard"
+  spec.add_dependency "zxing"
+  spec.add_dependency "uri-query_params"
 end

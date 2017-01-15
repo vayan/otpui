@@ -17,7 +17,7 @@ module Otpui
         Dir.mkdir dir
       end
       Log.debug "Saving settings to #{File.join(dir,'settings.yaml')}"
-      File.open(File.join(dir,"settings.yaml"), 'w') do |f|
+      File.open(File.join(dir,"settings.yaml"), "w") do |f|
         f.puts @settings.to_yaml
       end
     end
@@ -32,6 +32,15 @@ module Otpui
 
     def each(&block)
       @settings.each &block
+    end
+
+    def secrets
+      @settings["secrets"]
+    end
+
+    def add_secret(issuer, secret)
+      secrets.merge! issuer => secret
+      save
     end
 
     def self.load

@@ -1,71 +1,93 @@
+require "uri/query_params"
 require "glib2"
 require "gtk3"
 require "rotp"
 require "clipboard"
+require "zxing"
 
 require "otpui/version"
 require "otpui/log"
 require "otpui/resources"
 require "otpui/settings"
-require "otpui/settings_dialog"
+require "otpui/otp_list"
 
 module Otpui
   class Main
-    def start
-      def on_main_window_destroy(object)
-        Gtk.main_quit()
+    def on_menuitem_about_activate(object)
+      @about_window.show
+    end
+
+    def on_main_window_destroy(object)
+      Gtk.main_quit()
+    end
+
+    def on_settings_menu_item_activate(object)
+      dialog = SettingsDialog.new
+      dialog.show
+    end
+
+    def on_menuitem_add_otp_code_activate(object)
+      @builder["otp_add_via_code_popover"].show
+    end
+
+    def on_new_otp_button_activate(object)
+      @settings.add_secret(
+        @builder["new_otp_name"].text,
+        @builder["new_otp_code"].text
+      )
+      @builder["otp_add_via_code_popover"].hide
+    end
+
+    def on_menuitem_add_otp_qrcode_activate(object)
+      dialog = Gtk::FileChooserDialog.new(
+        title: "Gtk::FileChooser sample",
+        action: Gtk::FileChooserAction::OPEN,
+        buttons: [
+          [Gtk::Stock::OPEN, Gtk::ResponseType::ACCEPT],
+          [Gtk::Stock::CANCEL, Gtk::ResponseType::CANCEL]
+        ]
+      )
+
+      if dialog.run == Gtk::ResponseType::ACCEPT
+        uri = URI(ZXing.decode(dialog.filename))
+
+        @settings.add_secret(
+          uri.query_params["issuer"],
+          uri.query_params["secret"]
+        )
+
+        dialog.destroy
+      elsif
+        dialog.destroy
       end
+    end
 
-      def on_settings_menu_item_activate(object)
-        dialog = SettingsDialog.new
-        dialog.show
-      end
-
-      otps = Settings.load[:secrets]
-
-      builder = Gtk::Builder.new
-      builder.add_from_file Resources.get_glade("main.glade")
-
-      model = Gtk::ListStore.new(String, String)
-
-      renderer = Gtk::CellRendererText.new
-      column_name = Gtk::TreeViewColumn.new("Name", renderer, { text: 0 })
-      column_secret = Gtk::TreeViewColumn.new("Secret", renderer, { text: 1 })
-
-      treeview = Gtk::TreeView.new(model)
-      treeview.append_column(column_name)
-      treeview.append_column(column_secret)
-      treeview.selection.set_mode(:single)
-      builder["scrolled_otps_win"].add_with_viewport(treeview)
-
-      puts otps
-
-      otps.each do |name, secret|
-        iter = model.append
-        iter[0] = name
-        iter[1] = secret
-      end
-
-      builder.connect_signals do |handler|
+    def connect_signals
+      @builder.connect_signals do |handler|
         begin
           method(handler)
         rescue
           Log.debug "#{handler} not yet implemented!"
         end
       end
+    end
 
-      builder["main_window"].show_all
+    def start
+      logo = GdkPixbuf::Pixbuf.new(file: Resources.get_icon("logo.png"))
+      @settings = Settings.load
+      Gtk::Window.set_default_icon(logo)
+      @builder = Gtk::Builder.new
+      @builder.add_from_file Resources.get_glade("main.glade")
+      @about_window = @builder["about_window"]
+      @about_window.version = Otpui::VERSION
+      @about_window.logo = logo
 
-      GLib::Timeout.add(1000) do
-        otps.each do |name, secret|
-          totp = ROTP::TOTP.new("base32secret3232")
-          iter = model.append
-          iter[0] = name
-          iter[1] = totp.now.to_s
-        end
-        builder["main_window"].show_all
-        true
-      end
+      otp_list = OtpList.new(@builder)
+      otp_list.run
+
+      connect_signals
+
+      @builder["main_window"].show_all
 
       Gtk.main
     end

@@ -1,12 +1,24 @@
-# Otpui
+# OTPui
+
+Basic GTK app to display and copy OTP on Linux
+
+- [x] Import QRCodes made for Google Authenticator
+- [x] Import secrets directly
+- [x] Copy in clipboard on double click
+- [ ] Delete a OTP
+- [ ] Show timer
+- [ ] Stop stealing Google Authenticator logo
+- [ ] Be pretty
+
+This is not really secure, only use it if you have an encrypted disk or something.
+
+Every issuers and secrets are stored in cleartext in ~/.config/otpui
+
+![Look at this magnificient UI](https://github.com/vayan/otpui/blob/master/screenshot.png)
 
 ## Installation
 
-### requirements
-  * `libappindicator-dev`
+TODO
+
+## requirements
   * `xclip`
-
-on Ubuntu-like
-`sudo apt install libappindicator-dev xclip`
-
-## Usage
