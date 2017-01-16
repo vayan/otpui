@@ -1,8 +1,16 @@
 sudo: required
 language: ruby
 rvm:
-  - 2.4.0
-  - 2.3.3
-  - 2.2.6
+- 2.4.0
+- 2.3.3
+- 2.2.6
 before_install:
-  - gem install bundler
+- gem install bundler
+deploy:
+  provider: rubygems
+  api_key:
+    secure: Dc9m0Liq7Co6FR4pCh6h6ffmDbT0ukPVrmtUzpJyol+Sl/ljpa/HcIQ5xTc1EfOHF33KJMBMgdYE/vAsme/pJ6ghtGhkkD4IUVGeaPCiX+sDadAmOX6EEZmI35EAVs8MIN7n7NwDWKycf1V74pIl6U8Uh3H9A2DFaZYc/1gpfD5hRCQU7AVn5C5D+nCRgfwlKwi/scE0/0DaFbJWVCWy1bHPdS7x2qSKNGO0UGEELlsrk7YhHuEFHMRShH4z7NoLlC6vUbsCuVR6XECQypWPwWGRBU/GURlOqUi6Y+dbnQNiJ4MvMmAAYC7n/ItpMNzgtY4yXFLHVGLQfsgwMLxMcys8IVxJ99Ckm9AguErgApNfm7dAdNWxN3CoG2l4DocCBglSpAvBUUW43watRjax/K2K9RmL+eV5nVs+7J3xYisndAT+u6hNILgmJGbrLsPe8rFIzbkwbRhAsiMEg1L0TiCTWhmFaOTJ8IcL3Lu46NO6OlNH5zDYdLgPE89j7houqZwF3D26YCn8qJ4Mo1k3XS+OTY1WHyV1TkUW2eZOKYs4zkB0GhZmNwDzFHS3Qg2puUJRF7LOQOOG3hvFnNzol0E8u4fOdTwMBzAH1sD750YKvkP6s9q1hNK99pMAdI5KR+10ajnZVTlUvWbz0un0G9qTmlDMFETG4EBuFmp6bnU=
+  gem: otpui
+  on:
+    tags: true
+    repo: vayan/otpui
