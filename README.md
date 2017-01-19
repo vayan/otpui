@@ -8,7 +8,7 @@ Basic GTK app to display and copy OTP on Linux
 - [x] Import secrets directly
 - [x] Copy in clipboard on double click
 - [ ] Delete a OTP
-- [ ] Show timer
+- [x] Show timer
 - [ ] Stop stealing Google Authenticator logo
 - [ ] Be pretty
 
