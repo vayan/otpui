@@ -3,10 +3,12 @@ module Otpui
     def initialize(builder)
       @otps = Settings.load.secrets
       @model = Gtk::ListStore.new(String, String)
+      @progress_bar = builder["totp_timeout_progress_bar"]
 
-      renderer = Gtk::CellRendererText.new
-      column_name = Gtk::TreeViewColumn.new("Issuer", renderer, { text: 0 })
-      column_secret = Gtk::TreeViewColumn.new("Secret", renderer, { text: 1 })
+      text_renderer = Gtk::CellRendererText.new
+
+      column_name = Gtk::TreeViewColumn.new("Issuer", text_renderer, { text: 0 })
+      column_secret = Gtk::TreeViewColumn.new("Secret", text_renderer, { text: 1 })
       treeview = Gtk::TreeView.new(@model)
 
       treeview.append_column(column_name)
@@ -26,11 +28,29 @@ module Otpui
       i
     end
 
+    def get_current_second(totp, otp)
+      future_seconds = 0.0
+      while totp.verify(otp, Time.now + future_seconds)
+        future_seconds += 1
+      end
+      future_seconds
+    end
+
+    def get_fraction_progress(totp, otp)
+      get_current_second(totp, otp) / 30
+    end
+
+    def update_row(iter, secret = nil, issuer = nil)
+      secret = @otps.fetch iter[0] unless secret
+      iter[0] = issuer if issuer
+
+      totp = ROTP::TOTP.new(secret)
+      iter[1] = totp.now.to_s
+    end
+
     def refresh_values
       @model.each do |_model, path, iter|
-        secret = @otps.fetch iter[0]
-        totp = ROTP::TOTP.new(secret)
-        iter[1] = totp.now.to_s
+        update_row iter
       end
     end
 
@@ -38,14 +58,18 @@ module Otpui
       @model.clear
       @otps.each do |issuer, secret|
         iter = @model.append
-        totp = ROTP::TOTP.new(secret)
-        iter[0] = issuer
-        iter[1] = totp.now.to_s
+        update_row iter, secret, issuer
       end
+    end
+
+    def refresh_progress_bar
+      totp = ROTP::TOTP.new("progress32secret3232")
+      @progress_bar.fraction = get_fraction_progress(totp, totp.now.to_s)
     end
 
     def run
       GLib::Timeout.add(1000) do
+        refresh_progress_bar
         list_size == @otps.size ?
           refresh_values :
           refresh_all
