@@ -42,6 +42,7 @@ module Otpui
       dialog = Gtk::FileChooserDialog.new(
         title: "Gtk::FileChooser sample",
         action: Gtk::FileChooserAction::OPEN,
+        parent: @main_window,
         buttons: [
           [Gtk::Stock::OPEN, Gtk::ResponseType::ACCEPT],
           [Gtk::Stock::CANCEL, Gtk::ResponseType::CANCEL]
@@ -82,12 +83,14 @@ module Otpui
       @about_window.version = Otpui::VERSION
       @about_window.logo = logo
 
+      @main_window = @builder["main_window"]
+
       otp_list = OtpList.new(@builder)
       otp_list.run
 
       connect_signals
 
-      @builder["main_window"].show_all
+      @main_window.show_all
 
       Gtk.main
     end
