@@ -1,6 +1,14 @@
 # OTPui
 
-[![Build Status](https://travis-ci.org/vayan/otpui.svg?branch=master)](https://travis-ci.org/vayan/otpui)
+[![Gem version](https://img.shields.io/gem/v/otpui.svg?style=flat-square)
+](https://rubygems.org/gems/otpui)
+[![Gem downloads](https://img.shields.io/gem/dt/otpui.svg?style=flat-square)
+](https://rubygems.org/gems/otpui)
+[![Build Status](https://img.shields.io/travis/vayan/otpui.svg?style=flat-square)
+](https://travis-ci.org/vayan/otpui)
+[![Code Climate](https://img.shields.io/codeclimate/github/vayan/otpui.svg?style=flat-square)
+](https://codeclimate.com/github/vayan/otpui)
+
 
 Basic GTK app to display and copy OTP on Linux
 
