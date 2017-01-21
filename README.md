@@ -28,7 +28,14 @@ Every issuers and secrets are stored in cleartext in ~/.config/otpui
 
 ## Installation
 
-TODO
+### With rvm
 
-## requirements
+`rvm use 2.4.0@otpui --create`
+`gem install otpui`
+
+### For all users
+
+`sudo gem install otpui`
+
+## Requirements
   * `xclip`

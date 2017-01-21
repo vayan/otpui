@@ -23,9 +23,11 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec"
 
   spec.add_dependency "rotp"
+  spec.add_dependency "glib2"
   spec.add_dependency "gtk3"
   spec.add_dependency "clipboard"
   spec.add_dependency "zxing"
   spec.add_dependency "uri-query_params"
-  spec.add_dependency "gio2", "< 3.1"
+  spec.add_dependency "gio2"
+  spec.add_dependency "gobject-introspection"
 end

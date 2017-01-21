@@ -1,11 +1,16 @@
+os:
+  - linux
+  - osx
 sudo: required
 language: ruby
 rvm:
-- 2.4.0
-- 2.3.3
-- 2.2.6
-before_install:
-- gem install bundler
+  - 2.4.0
+  - 2.3.3
+  - 2.2.6
+install:
+  - gem uninstall bundler
+  - gem install bundler --version '1.13.7'
+  - bundle install
 deploy:
   provider: rubygems
   api_key:
@@ -14,3 +19,6 @@ deploy:
   on:
     tags: true
     repo: vayan/otpui
+matrix:
+  allow_failures:
+    - os: osx

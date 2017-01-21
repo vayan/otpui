@@ -35,7 +35,7 @@ module Otpui
     end
 
     def secrets
-      @settings["secrets"]
+      @settings["secrets"] || []
     end
 
     def add_secret(issuer, secret)
