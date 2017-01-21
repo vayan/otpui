@@ -27,20 +27,20 @@ module Otpui
     end
 
     def on_menuitem_add_otp_code_activate(object)
-      @builder["otp_add_via_code_popover"].show
+      @builder["otp_add_via_code_dialog"].show
     end
 
     def on_new_otp_button_activate(object)
       @settings.add_secret(
-        @builder["new_otp_name"].text,
-        @builder["new_otp_code"].text
+        @builder["new_otp_issuer"].text,
+        @builder["new_otp_secret"].text
       )
-      @builder["otp_add_via_code_popover"].hide
+      @builder["otp_add_via_code_dialog"].hide
     end
 
     def on_menuitem_add_otp_qrcode_activate(object)
       dialog = Gtk::FileChooserDialog.new(
-        title: "Gtk::FileChooser sample",
+        title: "Choose a QRCode",
         action: Gtk::FileChooserAction::OPEN,
         parent: @main_window,
         buttons: [
